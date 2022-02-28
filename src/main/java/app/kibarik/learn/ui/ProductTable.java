@@ -8,6 +8,8 @@ import app.kibarik.learn.utils.DialogUtils;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 
 public class ProductTable extends BaseForm {
@@ -15,6 +17,8 @@ public class ProductTable extends BaseForm {
     private JPanel mainPanel;
     private JTable table;
     private JButton createButton;
+
+    CustomTableModel<ProductEntity> model;
 
     public ProductTable() {
         super(800, 600);
@@ -34,8 +38,27 @@ public class ProductTable extends BaseForm {
     }
 
     public void initTables(){
+        table.addMouseListener(new MouseAdapter() {
+            /**
+             * {@inheritDoc}
+             *
+             * @param e
+             */
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int row = table.rowAtPoint(e.getPoint());
+                if(e.getClickCount() == 2){
+                    if(row != -1){
+                        dispose();
+                        new ProductEntityUpdate(model.getRows().get(row));
+                    }
+                }
+                super.mouseClicked(e);
+            }
+        });
+
         try {
-            CustomTableModel<ProductEntity> model = new CustomTableModel(
+            model = new CustomTableModel(
                     new String[] {"ID", "Название", "Тип продукции", "Артикул", "Описание", "Путь к изображению", "Изображение", "Количество пользователей цеха", "Номер производственного цеха",  "Минимальная стоимость для агента", "Изображение"},
                     ProductEntity.class,
                     ProductEntityManager.selectAll()
