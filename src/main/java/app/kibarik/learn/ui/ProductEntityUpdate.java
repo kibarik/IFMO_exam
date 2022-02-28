@@ -2,7 +2,6 @@ package app.kibarik.learn.ui;
 
 import app.kibarik.learn.entity.ProductEntity;
 import app.kibarik.learn.manager.ProductEntityManager;
-import app.kibarik.learn.ui.ProductTable;
 import app.kibarik.learn.utils.BaseForm;
 import app.kibarik.learn.utils.DialogUtils;
 
@@ -23,6 +22,7 @@ public class ProductEntityUpdate extends BaseForm {
     private JButton saveButton;
     private JTextField articleField;
     private JTextField idField;
+    private JButton deleteButton;
 
     private ProductEntity product;
 
@@ -54,6 +54,22 @@ public class ProductEntityUpdate extends BaseForm {
         backButton.addActionListener(e -> {
             dispose();
             new ProductTable();
+        });
+
+        deleteButton.addActionListener(e->{
+            try {
+                int is_delete = JOptionPane.showConfirmDialog(this, "Точно хотите удалить?", "Подтвердите удаление", JOptionPane.YES_NO_OPTION);
+                if (is_delete == JOptionPane.YES_OPTION){
+                    ProductEntityManager.delete(product);
+                    DialogUtils.showInfo(this, "Удаление успешно!");
+                    dispose();
+                    new ProductTable();
+                }
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                DialogUtils.showError(this, "Ошибка удаления");
+            }
         });
 
 
