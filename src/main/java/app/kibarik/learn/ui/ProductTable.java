@@ -8,15 +8,20 @@ import app.kibarik.learn.utils.DialogUtils;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
+import java.util.List;
 
 public class ProductTable extends BaseForm {
 
     private JPanel mainPanel;
     private JTable table;
     private JButton createButton;
+    private JButton фильтроватьПоТипуПродуктаButton;
+    private JComboBox typeFilterBox;
 
     CustomTableModel<ProductEntity> model;
 
@@ -26,6 +31,7 @@ public class ProductTable extends BaseForm {
 
         initButtons();
         initTables();
+        initBoxes();
 
         setVisible(true);
     }
@@ -37,7 +43,56 @@ public class ProductTable extends BaseForm {
         });
     }
 
+    public void initBoxes(){
+        typeFilterBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                applyFilters();
+            }
+        });
+    }
+
+    public void applyFilters(){
+        try {
+            List<ProductEntity>  list = ProductEntityManager.selectAll();
+
+            //Держители
+            //Запасные части
+            //Маски
+            //На лицо
+            //Повязки
+            //Полнолицевые
+
+            switch (typeFilterBox.getSelectedIndex()){
+                case 1:
+                    list.removeIf(s -> !s.getProductType().equals("Держители"));
+                    break;
+                case 2:
+                    list.removeIf(s -> !s.getProductType().equals("Запасные части"));
+                case 3:
+                    list.removeIf(s -> !s.getProductType().equals("Маски"));
+                    break;
+                case 4:
+                    list.removeIf(s -> !s.getProductType().equals("На лицо"));
+                    break;
+                case 5:
+                    list.removeIf(s -> !s.getProductType().equals("Повязки"));
+                    break;
+                case 6:
+                    list.removeIf(s -> !s.getProductType().equals("Полнолицевые"));
+                    break;
+            }
+
+            model.setRows(list);
+            model.fireTableDataChanged();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public void initTables(){
+
         table.addMouseListener(new MouseAdapter() {
             /**
              * {@inheritDoc}
@@ -47,8 +102,8 @@ public class ProductTable extends BaseForm {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int row = table.rowAtPoint(e.getPoint());
-                if(e.getClickCount() == 2){
-                    if(row != -1){
+                if(e.getClickCount() == 2 ){
+                    if(row!=-1){
                         dispose();
                         new ProductEntityUpdate(model.getRows().get(row));
                     }
