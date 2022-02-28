@@ -14,13 +14,23 @@ public class ProductTable extends BaseForm {
 
     private JPanel mainPanel;
     private JTable table;
+    private JButton createButton;
 
     public ProductTable() {
         super(800, 600);
         setContentPane(mainPanel);
+
+        initButtons();
         initTables();
 
         setVisible(true);
+    }
+
+    public void initButtons(){
+        createButton.addActionListener(e -> {
+            dispose();
+            new ProductEntityCreate();
+        });
     }
 
     public void initTables(){
@@ -44,3 +54,5 @@ public class ProductTable extends BaseForm {
         }
     }
 }
+
+//артикул, наименование, тип продукта (выпадающий список), изображение, количество человек для производства, номер производственного цеха, минимальная стоимость для агента и подробное описание (с возможностью многострочного ввода).
