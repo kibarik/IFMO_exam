@@ -13,6 +13,9 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ProductTable extends BaseForm {
@@ -22,6 +25,7 @@ public class ProductTable extends BaseForm {
     private JButton createButton;
     private JButton фильтроватьПоТипуПродуктаButton;
     private JComboBox typeFilterBox;
+    private JComboBox sortBox;
 
     CustomTableModel<ProductEntity> model;
 
@@ -41,10 +45,18 @@ public class ProductTable extends BaseForm {
             dispose();
             new ProductEntityCreate();
         });
+
     }
 
     public void initBoxes(){
         typeFilterBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                applyFilters();
+            }
+        });
+
+        sortBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 applyFilters();
@@ -55,13 +67,6 @@ public class ProductTable extends BaseForm {
     public void applyFilters(){
         try {
             List<ProductEntity>  list = ProductEntityManager.selectAll();
-
-            //Держители
-            //Запасные части
-            //Маски
-            //На лицо
-            //Повязки
-            //Полнолицевые
 
             switch (typeFilterBox.getSelectedIndex()){
                 case 1:
@@ -87,7 +92,77 @@ public class ProductTable extends BaseForm {
             model.fireTableDataChanged();
         } catch (SQLException e) {
             e.printStackTrace();
+            DialogUtils.showError(null, "Невозможно применить фильтрацию по типу");
         }
+
+        switch (sortBox.getSelectedIndex()){
+
+            //По возрастанию "номер производственного цеха"
+            //По убыванию "номер производственного цеха"
+            //По возрастанию "Минимальная стоимость агента"
+            //По убыванию "Минимальная стоимость агента"
+            //По возрастанию "наименование"
+            //По убыванию "наименование"
+            case 1:
+                Collections.sort(model.getRows(), new Comparator<ProductEntity>() {
+                    @Override
+                    public int compare(ProductEntity o1, ProductEntity o2) {
+                        return Integer.compare(o1.getProductionWorkshopNumber(), o2.getProductionWorkshopNumber());
+                    }
+                });
+            break;
+
+            case 2:
+                Collections.sort(model.getRows(), new Comparator<ProductEntity>() {
+                    @Override
+                    public int compare(ProductEntity o1, ProductEntity o2) {
+                        return Integer.compare(o2.getProductionWorkshopNumber(), o1.getProductionWorkshopNumber());
+                    }
+                });
+                break;
+
+
+            case 3:
+                Collections.sort(model.getRows(), new Comparator<ProductEntity>() {
+                    @Override
+                    public int compare(ProductEntity o1, ProductEntity o2) {
+                        return Double.compare(o1.getMinCostForAgent(), o2.getMinCostForAgent());
+                    }
+                });
+                break;
+
+
+            case 4:
+                Collections.sort(model.getRows(), new Comparator<ProductEntity>() {
+                    @Override
+                    public int compare(ProductEntity o1, ProductEntity o2) {
+                        return Double.compare(o2.getMinCostForAgent(), o1.getMinCostForAgent());
+                    }
+                });
+                break;
+
+
+            case 5:
+                Collections.sort(model.getRows(), new Comparator<ProductEntity>() {
+                    @Override
+                    public int compare(ProductEntity o1, ProductEntity o2) {
+                        return o1.getTitle().compareTo(o2.getTitle());
+                    }
+                });
+                break;
+
+            case 6:
+                Collections.sort(model.getRows(), new Comparator<ProductEntity>() {
+                    @Override
+                    public int compare(ProductEntity o1, ProductEntity o2) {
+                        return o2.getTitle().compareTo(o1.getTitle());
+                    }
+                });
+                break;
+        }
+
+
+
 
     }
 
@@ -114,17 +189,17 @@ public class ProductTable extends BaseForm {
 
         try {
             model = new CustomTableModel(
-                    new String[] {"ID", "Название", "Тип продукции", "Артикул", "Описание", "Путь к изображению", "Изображение", "Количество пользователей цеха", "Номер производственного цеха",  "Минимальная стоимость для агента", "Изображение"},
+                    new String[] {"ID", "Название", "Тип продукции", "Артикул", "Описание", "Путь к изображению", "Количество пользователей цеха", "Номер производственного цеха",  "Минимальная стоимость для агента", "Изображение"},
                     ProductEntity.class,
                     ProductEntityManager.selectAll()
             );
             table.setModel(model);
             table.setRowHeight(50);
 
-            TableColumn column = table.getColumn("Путь к изображению");
-            column.setMaxWidth(0);
-            column.setMinWidth(0);
-            column.setWidth(0);
+//            TableColumn column = table.getColumn("Путь к изображению");
+//            column.setMaxWidth(0);
+//            column.setMinWidth(0);
+//            column.setWidth(0);
 
 
         } catch (SQLException e) {
