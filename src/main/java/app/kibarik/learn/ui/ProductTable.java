@@ -162,8 +162,6 @@ public class ProductTable extends BaseForm {
         }
 
 
-
-
     }
 
     public void initTables(){
