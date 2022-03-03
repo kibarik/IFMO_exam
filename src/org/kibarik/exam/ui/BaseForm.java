@@ -3,12 +3,10 @@ package org.kibarik.exam.ui;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 public class BaseForm extends JFrame {
     private static String APP_TITLE = "Title";
-    private static BufferedImage APP_ICON = null;
+    private static Image APP_ICON = null;
 
     static {
         try {

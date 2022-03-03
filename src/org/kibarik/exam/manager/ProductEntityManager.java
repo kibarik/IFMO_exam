@@ -52,20 +52,23 @@ public class ProductEntityManager {
             ps.setInt(7, product.getProductionWorkshopNumber());
             ps.setDouble(8, product.getMinCostForAgent());
 
-            ResultSet rs = ps.executeQuery();
+            ps.executeUpdate();
+
+            ResultSet rs = ps.getGeneratedKeys();
+
             if(rs.next()){
                 product.setId(rs.getInt(1));
             }
         } catch (SQLException e) {
+            System.out.print(e.getMessage());
             throw new SQLException(e.getMessage());
         }
     }
 
-
     public static void update(ProductEntity product) throws SQLException {
         try (Connection c = App.getConnection()) {
-            String sql = "UPDATE product(Title=?, ProductType=?, ArticleNumber=?, Description=?, Image=?,  ProductionPersonCount=?, ProductionWorkshopNumber=?, MinCostForAgent=?) WHERE ID=?";
-            PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            String sql = "UPDATE product SET `Title`=?, `ProductType`=?, `ArticleNumber`=?, `Description`=?, `Image`=?,  `ProductionPersonCount`=?, `ProductionWorkshopNumber`=?, `MinCostForAgent`=? WHERE `ID`=?";
+            PreparedStatement ps = c.prepareStatement(sql);
             ps.setString(1, product.getTitle());
             ps.setString(2, product.getProductType());
             ps.setString(3, product.getArticleNumber());
@@ -77,6 +80,8 @@ public class ProductEntityManager {
             ps.setInt(9, product.getId());
             ps.executeUpdate();
         } catch (SQLException e) {
+            System.out.print(e.getMessage());
+
             throw new SQLException(e.getMessage());
         }
     }

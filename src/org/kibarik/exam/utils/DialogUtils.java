@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class DialogUtils {
 
-    public void  showInfo(Component component, String msg){
+    public static void  showInfo(Component component, String msg){
         JOptionPane.showMessageDialog(component, msg, "Информация: ", JOptionPane.INFORMATION_MESSAGE);
     }
 
