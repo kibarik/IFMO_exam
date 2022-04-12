@@ -65,7 +65,7 @@ public class ProductEntityManager {
 
     public static void update(ProductEntity product) throws SQLException {
         try (Connection c = App.getConnection()){
-            String sql = "UPDATE product SET (Title=?, ProductType=?, ArticleNumber=?, Description=?, Image=?, ProductionPersonCount=?, ProductionWorkshopNumber=?, MinCostForAgent=?) WHERE ID=?";
+            String sql = "UPDATE product SET Title=?, ProductType=?, ArticleNumber=?, Description=?, Image=?, ProductionPersonCount=?, ProductionWorkshopNumber=?, MinCostForAgent=? WHERE ID=?";
             PreparedStatement st = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             st.setString(1, product.getTitle());
             st.setString(2, product.getProductType());

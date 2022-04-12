@@ -7,6 +7,9 @@ import org.kibarik.exam.utils.DialogUtils;
 
 import javax.swing.*;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class ProductCreateForm extends BaseForm {
     private JPanel mainPanel;
@@ -42,13 +45,65 @@ public class ProductCreateForm extends BaseForm {
         addButton.addActionListener(e -> {
 
             String title = titleField.getText();
+            if(title.isBlank() || title.length() > 100){
+                DialogUtils.showError(this, "Ошибка валидации! Title должен быть заполнен или длина меньше 100 символов");
+                return;
+            }
+
             String productType = productTypeField.getText();
+            if(productType.isBlank() || productType.length() > 100){
+                DialogUtils.showError(this, "Ошибка валидации! productType должен быть заполнен или длина меньше 100 символов");
+                return;
+            }
+
             String articleNumber = articleNumberField.getText();
+            if(articleNumber.isBlank() || articleNumber.length() > 100){
+                DialogUtils.showError(this, "Ошибка валидации! articleNumber должен быть заполнен или длина меньше 100 символов");
+                return;
+            }
+
             String description = descriptionField.getText();
+            if(description.isBlank() || description.length() > 500){
+                DialogUtils.showError(this, "Ошибка валидации! description должен быть заполнен или длина меньше 100 символов");
+                return;
+            }
+
             String image = imageField.getText();
+            if(image.isBlank() || image.length() > 500){
+                DialogUtils.showError(this, "Ошибка валидации! image должен быть заполнен или длина меньше 100 символов");
+                return;
+            }
+
             int productionPersonCount = (int) productionPersonCountSpinner.getValue();
+            if(productionPersonCount < 0){
+                DialogUtils.showError(this, "Ошибка валидации! productionPersonCount должен быть больше нуля");
+                return;
+            }
+
             int productionWorkshopNumber = (int) productionWorkshopNumberSpinner.getValue();
-            double minCostForAgent = Double.parseDouble(minCostField.getText());
+            if(productionWorkshopNumber < 0){
+                DialogUtils.showError(this, "Ошибка валидации! productionWorkshopNumber должен быть больше нуля");
+                return;
+            }
+
+
+            double minCostForAgent = 0.0;
+            try {
+                minCostForAgent = Double.parseDouble(minCostField.getText());
+            } catch (NumberFormatException ex){
+                DialogUtils.showError(this, "Ошибка валидации! minCostForAgent не соответствует типу Double");
+                return;
+            }
+
+            String dftext = DateField.getText();
+            try {
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                dateFormat.parse(dftext);
+            } catch (ParseException ex) {
+                DialogUtils.showError(this, "Ошибка валидации! DateField не соответствует дате");
+                ex.printStackTrace();
+                return;
+            }
 
 
             try {
