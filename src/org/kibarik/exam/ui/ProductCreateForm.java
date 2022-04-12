@@ -2,29 +2,33 @@ package org.kibarik.exam.ui;
 
 import org.kibarik.exam.entity.ProductEntity;
 import org.kibarik.exam.manager.ProductEntityManager;
+import org.kibarik.exam.utils.BaseForm;
 import org.kibarik.exam.utils.DialogUtils;
 
 import javax.swing.*;
 import java.sql.SQLException;
 
-public class ProductCreateForm extends BaseForm{
-    private JButton backButton;
-    private JButton saveButton;
-    private JTextField titleField;
-    private JComboBox productionTypeComoBox;
-    private JTextArea descriptionField;
-    private JSpinner personalCountField;
-    private JTextField articleField;
-    private JSpinner factoryNumberField;
-    private JTextField minCostField;
+public class ProductCreateForm extends BaseForm {
     private JPanel mainPanel;
+    private JTextField titleField;
+    private JTextArea descriptionField;
+    private JCheckBox booleanField;
+    private JTextField productTypeField;
+    private JTextField articleNumberField;
     private JTextField imageField;
+    private JTextField minCostField;
+    private JTextField DateField;
+    private JTextField DatetimeField;
+    private JButton backButton;
+    private JButton addButton;
+    private JSpinner productionPersonCountSpinner;
+    private JSpinner productionWorkshopNumberSpinner;
 
-    ProductCreateForm(){
-        super(600, 600);
+    public ProductCreateForm(){
+        super(600,600);
+        setContentPane(mainPanel);
 
         initButtons();
-        setContentPane(mainPanel);
 
         setVisible(true);
     }
@@ -35,20 +39,21 @@ public class ProductCreateForm extends BaseForm{
             new ProductTableForm();
         });
 
-        saveButton.addActionListener(e -> {
+        addButton.addActionListener(e -> {
 
             String title = titleField.getText();
-            String productType = String.valueOf(productionTypeComoBox.getSelectedItem());
-            String articleNumber = articleField.getText();
+            String productType = productTypeField.getText();
+            String articleNumber = articleNumberField.getText();
             String description = descriptionField.getText();
             String image = imageField.getText();
-            int productionPersonCount = (int) personalCountField.getValue();
-            int productionWorkshopNumber = (int) factoryNumberField.getValue();
-            Double minCostForAgent = Double.parseDouble(minCostField.getText());
+            int productionPersonCount = (int) productionPersonCountSpinner.getValue();
+            int productionWorkshopNumber = (int) productionWorkshopNumberSpinner.getValue();
+            double minCostForAgent = Double.parseDouble(minCostField.getText());
+
 
             try {
                 ProductEntityManager.insert(new ProductEntity(
-                        -1,
+                    -1,
                         title,
                         productType,
                         articleNumber,
@@ -58,13 +63,15 @@ public class ProductCreateForm extends BaseForm{
                         productionWorkshopNumber,
                         minCostForAgent
                 ));
-                DialogUtils.showInfo(this, "Добавление успешно!");
-                dispose();
-                new ProductTableForm();
+
+                DialogUtils.showInfo(this, "Новый продукт добавлен в таблицу!");
             } catch (SQLException ex) {
-                DialogUtils.showError(this, "Ошибка добавления:"+ex.getMessage());
+                DialogUtils.showInfo(this, "Ошибка SQL: "+ex.getMessage());
             }
         });
+
     }
+
+
 
 }
